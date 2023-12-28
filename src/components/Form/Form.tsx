@@ -4,58 +4,60 @@ import api from '../../api'
 import { Gift } from '../../types'
 
 export default function Form({
-  onAddGift
+  onAddGift,
+  setOpenModal
 }: {
   onAddGift: (gift: Gift) => Array<Gift>
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const [giftname, setGiftName] = useState('')
+  const [gift, setGift] = useState({
+    name: '',
+    quantity: 1
+  })
 
-  const handleChange = (text: string) => {
-    setGiftName(text)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    const newGift = { ...gift, [name]: value }
+
+    setGift(newGift)
   }
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    const trimmed = giftname.trim()
+    const { name, quantity } = gift
+
+    const trimmed = name.trim()
     if (!trimmed) return
 
-    const newGift = api.add(trimmed)
+    const newGift = api.add({ name: trimmed, quantity })
 
     onAddGift(newGift)
 
-    setGiftName('')
+    setGift({ name: '', quantity: 1 })
+
+    setOpenModal(false)
   }
 
   return (
     <form className="flex justify-center items-center w-full gap-3">
       <input
+        name="name"
         placeholder="Add your wishlist item"
         className="w-full rounded py-2 px-3 opacity-90 bg-black/80 text-white placeholder-white/50 focus:outline-none focus:ring focus:ring-white/20"
         type="text"
-        onChange={(e) => handleChange(e.target.value)}
-        value={giftname}
+        onChange={(e) => handleChange(e)}
+        value={gift.name}
       />
-
-      <button
-        type="button"
-        className="flex justify-center items-center w-1/5 bg-black/70 hover:cursor-pointer hover:bg-black/60 text-white py-2 px-2 rounded hover:shadow-lg"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      </button>
+      <input
+        name="quantity"
+        type="number"
+        className="w-1/6 text-center text-white/80 bg-black/80 rounded py-2 px-3 opacity-90 focus:outline-none focus:ring focus:ring-white/20"
+        min={1}
+        max={100}
+        onChange={(e) => handleChange(e)}
+        value={gift.quantity}
+      />
       <button
         className="w-1/3 bg-black/70 hover:cursor-pointer hover:bg-black/60 text-white py-2 px-2 rounded hover:shadow-lg"
         type="submit"
