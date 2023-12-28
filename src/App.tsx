@@ -1,5 +1,7 @@
 import './App.css'
 
+import { Toaster } from 'sonner'
+
 import GiftsList from './components/GiftsList/GiftsList'
 
 function App() {
@@ -7,6 +9,7 @@ function App() {
     <div>
       <header>
         <GiftsList />
+        <Toaster closeButton={true} />
       </header>
     </div>
   )
