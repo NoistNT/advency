@@ -13,10 +13,10 @@ const api = {
     return localGifts
   },
 
-  add: (name: string) => {
+  add: ({ name, quantity }: { name: string; quantity: number }) => {
     const localGifts: Gift[] = api.list()
     const id = Math.max(...localGifts.map((gift) => gift.id)) + 1
-    const gift = { id, name }
+    const gift = { id, name, quantity }
 
     if (
       localGifts.some((gift) => gift.name.toLowerCase() === name.toLowerCase())
